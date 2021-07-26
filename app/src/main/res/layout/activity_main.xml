@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#111111"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/btn_rotae"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="30dp"
+            android:layout_toLeftOf="@+id/btn_crop"
+            android:src="@drawable/_0_dgree_rotation"
+            android:text="90도 회전" />
+
+        <ImageView
+            android:id="@+id/btn_crop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/crop"
+            android:text="자르기" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_target"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="200dp"
+        android:adjustViewBounds="true"
+        android:padding="0dp"
+        android:src="@drawable/longwith" />
+
+    <ImageView
+        android:id="@+id/iv_cropArea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/rect" />
+
+    <SeekBar
+        android:id="@+id/sb_squerSize"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/sb_squerSize"
+        android:gravity="center_horizontal"
+        android:text="Adjust Crop Size"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+
+    <ImageView
+        android:id="@+id/iv_result"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70dp"
+        android:background="#111111"></ImageView>
+
+</RelativeLayout>
