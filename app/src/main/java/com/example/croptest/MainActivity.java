@@ -4,29 +4,20 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.TextView;
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +32,36 @@ public class MainActivity extends AppCompatActivity {
     private float startPointX;
     private float startPointY;
 
+    private void initTargetImge(){
+        Intent intent = getIntent();
+        int requestCode = intent.getIntExtra("requestCode",0);
+        int resultCode = intent.getIntExtra("resultCode",0);
+
+        final int PICK_FROM_ALBUM = 1;
+        final int PICK_FROM_CAMERA = 2;
+
+        Bitmap thum_bitmap = null;
+        if (requestCode == PICK_FROM_ALBUM && resultCode == Activity.RESULT_OK) {
+            try {
+                Intent data = intent.getParcelableExtra("data");
+
+                InputStream in = getContentResolver().openInputStream(data.getData());
+                thum_bitmap = BitmapFactory.decodeStream(in);
+
+                in.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }  else if (requestCode == PICK_FROM_CAMERA && resultCode == Activity.RESULT_OK) {
+            String photo_file = intent.getStringExtra("photo_file");
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 2;
+            thum_bitmap = BitmapFactory.decodeFile(photo_file, options);
+        }
+
+        iv_target.setImageBitmap(thum_bitmap);
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -57,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         sb_squerSize = (SeekBar) findViewById(R.id.sb_squerSize);
 
+        initTargetImge();
 
         iv_target.post(initTargetImage());
 
@@ -71,8 +93,9 @@ public class MainActivity extends AppCompatActivity {
                 iv_cropArea.getLayoutParams().height = progress;
                 iv_cropArea.requestLayout();
 
-                iv_cropArea.setX( iv_target.getX() + (iv_target.getWidth()/2 - iv_cropArea.getWidth()/2) );
-                iv_cropArea.setY(iv_target.getY() + (iv_target.getHeight()/2 - iv_cropArea.getHeight()/2) );
+                iv_cropArea.setX( (int)(iv_target.getX() + (iv_target.getWidth()/2 - iv_cropArea.getWidth()/2)) );
+                iv_cropArea.setY( (int)(iv_target.getY() + (iv_target.getHeight()/2 - iv_cropArea.getHeight()/2)) );
+
             }
 
             @Override
@@ -219,15 +242,15 @@ public class MainActivity extends AppCompatActivity {
                     iv_cropArea.getLayoutParams().width = iv_target.getHeight();
                     iv_cropArea.getLayoutParams().height = iv_target.getHeight();
 
-                    sb_squerSize.setMin( (iv_target.getHeight()/5) );
+                    sb_squerSize.setMin( (iv_target.getHeight()/4) );
                     sb_squerSize.setMax(iv_target.getHeight());
                     Log.i("Tag1", "iv_canvas2.getLayoutParams().height :" + iv_cropArea.getLayoutParams().height);
                 } else {
                     iv_cropArea.getLayoutParams().width = iv_target.getWidth();
                     iv_cropArea.getLayoutParams().height = iv_target.getWidth();
 
-                    sb_squerSize.setMin( (iv_target.getWidth()/5) );
-                    sb_squerSize.setMax(iv_target.getWidth());
+                    sb_squerSize.setMin( (iv_target.getWidth()/4) ); //처음 상자크기는 타겟 이미지의 4분에 1만큼
+                    sb_squerSize.setMax(iv_target.getWidth()-2); // 혹시나 맥시멈 했을때 크롭상자가 타겟보다 커지는 걸 방지하는 크기
                     Log.i("Tag1", "iv_canvas2.getLayoutParams().width :" + iv_cropArea.getLayoutParams().width);
                 }
 
